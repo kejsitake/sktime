@@ -90,6 +90,7 @@ class MyForecaster(BaseForecaster):
         "requires-fh-in-fit": True,  # is forecasting horizon already required in fit?
         "X-y-must-have-same-index": True,  # can estimator handle different X/y index?
         "enforce_index_type": None,  # index type that needs to be enforced in X/y
+        "capability:pred_int": False # is forecaster probabilistic?
     }
     # in case of inheritance, concrete class should typically set tags
     #  alternatively, descendants can set tags in __init__ (avoid this if possible)
@@ -238,21 +239,65 @@ class MyForecaster(BaseForecaster):
 
     # todo: consider implementing this, optional
     # if not implementing, delete the method
-    def _compute_pred_int(self, alphas):
-        """Calculate the prediction errors for each point.
+    def _predict_interval(self, fh, X, coverage):
+        """Compute/return prediction interval forecasts.
+
+        If coverage is iterable, multiple intervals will be calculated.
+
+            core logic
+
+        State required:
+            Requires state to be "fitted".
 
         Parameters
         ----------
+        fh : int, list, np.array or ForecastingHorizon
+           Forecasting horizon, default = y.index (in-sample forecast)
+        X : pd.DataFrame, optional (default=None)
+           Exogenous time series
         alpha : float or list, optional (default=0.95)
-            A significance level or list of significance levels.
+           Probability mass covered by interval or list of coverages.
 
         Returns
         -------
-        errors : list of pd.Series
-            Each series in the list will contain the errors for each point in
-            the forecast for the corresponding alpha.
+        pred_int : pd.DataFrame
+            Column has multi-index: first level is variable name from y in fit,
+                second level being quantile fractions for interval low-high.
+                Quantile fractions are 0.5 - c/2, 0.5 + c/2 for c in coverage.
+            Row index is fh. Entries are quantile forecasts, for var in col index,
+                at quantile probability in second col index, for the row index.
+        """
+        #implement here
+
+    # todo: consider implementing this, optional
+    # if not implementing, delete the method
+    def _predict_quantiles(self, fh, X, alpha):
+        """
+        Compute/return prediction quantiles for a forecast.
+
+        Must be run *after* the forecaster has been fitted.
+
+        If alpha is iterable, multiple quantiles will be calculated.
+
+        Parameters
+        ----------
+        fh : int, list, np.array or ForecastingHorizon
+            Forecasting horizon, default = y.index (in-sample forecast)
+        X : pd.DataFrame, optional (default=None)
+            Exogenous time series
+        alpha : float or list of float, optional (default=[0.05, 0.95])
+            A probability or list of, at which quantile forecasts are computed.
+
+        Returns
+        -------
+        quantiles : pd.DataFrame
+            Column has multi-index: first level is variable name from y in fit,
+                second level being the values of alpha passed to the function.
+            Row index is fh. Entries are quantile forecasts, for var in col index,
+                at quantile probability in second col index, for the row index.
         """
         # implement here
+
 
     # todo: consider implementing this, optional
     # if not implementing, delete the method
