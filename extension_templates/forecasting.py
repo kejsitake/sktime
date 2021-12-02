@@ -90,7 +90,7 @@ class MyForecaster(BaseForecaster):
         "requires-fh-in-fit": True,  # is forecasting horizon already required in fit?
         "X-y-must-have-same-index": True,  # can estimator handle different X/y index?
         "enforce_index_type": None,  # index type that needs to be enforced in X/y
-        "capability:pred_int": False # is forecaster probabilistic?
+        "capability:pred_int": False,  # is forecaster probabilistic?
     }
     # in case of inheritance, concrete class should typically set tags
     #  alternatively, descendants can set tags in __init__ (avoid this if possible)
@@ -267,7 +267,7 @@ class MyForecaster(BaseForecaster):
             Row index is fh. Entries are quantile forecasts, for var in col index,
                 at quantile probability in second col index, for the row index.
         """
-        #implement here
+        # implement here
 
     # todo: consider implementing this, optional
     # if not implementing, delete the method
