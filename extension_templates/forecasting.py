@@ -298,7 +298,6 @@ class MyForecaster(BaseForecaster):
         """
         # implement here
 
-
     # todo: consider implementing this, optional
     # if not implementing, delete the method
     def _predict_moving_cutoff(
