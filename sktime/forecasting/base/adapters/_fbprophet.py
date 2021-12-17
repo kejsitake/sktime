@@ -174,6 +174,15 @@ class _ProphetAdapter(BaseForecaster):
                 self._forecaster.uncertainty_samples = self.uncertainty_samples
 
 
+def df_to_prophet(X):
+    X.columns = X.columns.astype(str)
+    if "ds" in X.columns:
+        longest_column_name = max(X.columns, key=len)
+        X.loc[:, str(longest_column_name) + "_"] = X.loc[:, "ds"]
+    X.loc[:, "ds"] = X.index
+    return X
+
+
 def _merge_X(df, X):
     """Merge X and df on the DatetimeIndex.
 
@@ -198,7 +207,8 @@ def _merge_X(df, X):
     # Merging on the index is unreliable, possibly due to loss of freq information in fh
     X.columns = X.columns.astype(str)
     if "ds" in X.columns:
-        raise ValueError("Column name 'ds' is reserved in fbprophet")
+        X = df_to_prophet(X)
+        # raise ValueError("Column name 'ds' is reserved in fbprophet")
     X.loc[:, "ds"] = X.index
     # df = df.merge(X, how="inner", on="ds", copy=False)
     df = df.merge(X, how="inner", on="ds")
